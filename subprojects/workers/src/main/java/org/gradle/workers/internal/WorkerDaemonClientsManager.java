@@ -30,7 +30,7 @@ import org.gradle.internal.logging.events.LogLevelChangeEvent;
 import org.gradle.internal.logging.events.OutputEvent;
 import org.gradle.internal.logging.events.OutputEventListener;
 import org.gradle.process.internal.health.memory.MemoryManager;
-import org.gradle.process.internal.health.memory.TotalPhysicalMemoryProvider;
+import org.gradle.process.internal.health.memory.PhysicalMemoryProvider;
 import org.gradle.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -124,7 +124,7 @@ public class WorkerDaemonClientsManager implements Stoppable {
 
     private static long getTotalPhysicalMemory() {
         try {
-            return TotalPhysicalMemoryProvider.getTotalPhysicalMemory();
+            return PhysicalMemoryProvider.getTotalPhysicalMemory();
         } catch (UnsupportedOperationException e) {
             return -1;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 the original author or authors.
+ * Copyright 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,16 @@
 
 package org.gradle.process.internal.health.memory;
 
-public class MBeanAvailableMemory implements AvailableMemory {
-    @Override
-    public long get() throws UnsupportedOperationException {
-        // MBean value takes reclaimable memory into account on Windows and Solaris
-        // See https://msdn.microsoft.com/en-us/library/windows/desktop/aa366770(v=vs.85).aspx
-        // See https://github.com/dmlloyd/openjdk/blob/jdk8u/jdk8u/jdk/src/solaris/native/sun/management/OperatingSystemImpl.c#L341
+import org.gradle.internal.jvm.Jvm;
+
+public class PhysicalMemoryProvider {
+    public static long getTotalPhysicalMemory() {
+        String attribute = Jvm.current().isIbmJvm() ? "TotalPhysicalMemory" : "TotalPhysicalMemorySize";
+        return MBeanAttributeProvider.getMbeanAttribute("java.lang:type=OperatingSystem", attribute, Long.class);
+
+    }
+
+    public static long getFreePhysicalMemory() {
         return MBeanAttributeProvider.getMbeanAttribute("java.lang:type=OperatingSystem", "FreePhysicalMemorySize", Long.class);
     }
 }
